@@ -11,27 +11,27 @@ def index():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # Kinukuha ang 'name' mula sa HTML input
-        patient_name = request.form.get("name") 
-        age = request.form.get("age")
-        disease = request.form.get("disease")
-        doctor = request.form.get("doctor")
+        # Kinukuha ang inputs mula sa HTML
+        p_name = request.form.get("name") 
+        p_age = request.form.get("age")
+        p_disease = request.form.get("disease")
+        p_doctor = request.form.get("doctor")
 
         conn = create_connection()
         if conn:
             cursor = conn.cursor()
             try:
-                # Dapat tugma ang columns sa SQL table mo
+                
                 sql = "INSERT INTO patients (name, age, disease, doctor) VALUES (%s, %s, %s, %s)"
-                cursor.execute(sql, (patient_name, age, disease, doctor))
+                cursor.execute(sql, (p_name, p_age, p_disease, p_doctor))
                 conn.commit()
-                # Ipapasa ang patient_name sa success page
-                return render_template("success.html", patient_name=patient_name)
+                return render_template("success.html", patient_name=p_name)
             except Exception as e:
-                return f"Error: {e}"
+                return f"Database Error: {e}"
             finally:
                 cursor.close()
                 conn.close()
+        return "Database connection failed."
     return render_template("register.html")
 
 if __name__ == "__main__":
