@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Patient Admission Form</h2>
+        <form action="/register" method="POST">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="Juan Dela Cruz" required>
+
+            <label>Age</label>
+            <input type="number" name="age" required>
+
+            <label>Medical Condition / Disease</label>
+            <input type="text" name="disease" placeholder="e.g. Fever, Hypertension" required>
+
+            <label>Assigned Doctor</label>
+            <select name="doctor">
+                <option value="Dr. Smith">Dr. Smith (Internal Medicine)</option>
+                <option value="Dr. Garcia">Dr. Garcia (Pediatrics)</option>
+                <option value="Dr. Reyes">Dr. Reyes (Surgery)</option>
+            </select>
+
+            <button type="submit">Submit Registration</button>
+        </form>
+        <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
