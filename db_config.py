@@ -9,7 +9,7 @@ def create_connection():
             user=os.environ.get("DB_USER"),
             password=os.environ.get("DB_PASSWORD"),
             database=os.environ.get("DB_NAME"),
-            port=int(os.environ.get("DB_PORT", 38809))
+            port=int(os.environ.get("DB_PORT", 43312))
         )
         if connection.is_connected():
             return connection
