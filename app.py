@@ -45,7 +45,8 @@ def register():
         )
         conn.commit()
         conn.close()
-        return "Saved to SQLite ✅"
+        # Render styled success page with patient name
+        return render_template("registration_success.html", patient_name=request.form.get("name"))
 
     return render_template("register.html")
 
