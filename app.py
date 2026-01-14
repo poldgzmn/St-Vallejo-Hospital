@@ -1,17 +1,15 @@
-import os
-import sqlite3   # <-- SQLITE3 INCLUDED HERE
+import sqlite3
 from flask import Flask, render_template, request
-from db_config import create_connection
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 
-# ---------- CREATE DATABASE + TABLE ----------
+# ---- SQLITE CONNECTION ----
+def create_connection():
+    return sqlite3.connect("patients.db", check_same_thread=False)
+
+# ---- CREATE DB + TABLE ----
 def init_db():
     conn = create_connection()
-    if conn is None:
-        print("Failed to connect to SQLite")
-        return
-
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS patients (
@@ -26,7 +24,6 @@ def init_db():
     conn.close()
 
 init_db()
-# --------------------------------------------
 
 @app.route("/")
 def index():
@@ -35,31 +32,22 @@ def index():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        p_name = request.form.get("name")
-        p_age = request.form.get("age")
-        p_disease = request.form.get("disease")
-        p_doctor = request.form.get("doctor")
-
-        try:
-            conn = create_connection()
-            if conn is None:
-                return "<h1>Database Connection Failed</h1>"
-
-            cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO patients (name, age, disease, doctor) VALUES (?, ?, ?, ?)",
-                (p_name, p_age, p_disease, p_doctor)
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO patients (name, age, disease, doctor) VALUES (?, ?, ?, ?)",
+            (
+                request.form.get("name"),
+                request.form.get("age"),
+                request.form.get("disease"),
+                request.form.get("doctor"),
             )
-            conn.commit()
-            conn.close()
-
-            return render_template("success.html", patient_name=p_name)
-
-        except Exception as e:
-            return f"<h1>SQLite Error</h1><p>{str(e)}</p>"
+        )
+        conn.commit()
+        conn.close()
+        return "Saved to SQLite ✅"
 
     return render_template("register.html")
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
